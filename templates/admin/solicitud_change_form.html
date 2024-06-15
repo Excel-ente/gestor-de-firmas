@@ -1,0 +1,33 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static admin_modify admin_list %}
+
+{% block extrahead %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#id_solicitante').change(function() {
+            var clienteId = $(this).val();
+            if (clienteId) {
+                $.ajax({
+                    url: "{% url 'cargar_cuentas' %}",
+                    data: {
+                        'cliente': clienteId
+                    },
+                    success: function(data) {
+                        var select = $('#id_cuenta');
+                        select.empty();
+                        $.each(data, function(index, item) {
+                            select.append($('<option>', {
+                                value: item.id,
+                                text: item.nombre
+                            }));
+                        });
+                    }
+                });
+            } else {
+                $('#id_cuenta').empty();
+            }
+        });
+    });
+</script>
+{% endblock %}

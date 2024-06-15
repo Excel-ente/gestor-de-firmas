@@ -1,0 +1,258 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static jazzmin %}
+{% load humanize %}
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+.form-inline .form-group {
+    margin-right: 15px;
+    margin-bottom: 0;
+}
+
+.form-inline .form-group label {
+    margin-right: 5px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-inline .form-group select,
+.form-inline .form-group input[type="date"] {
+    width: auto;
+    display: inline-block;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-inline .form-group select:focus,
+.form-inline .form-group input[type="date"]:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #004085;
+    box-shadow: 0 0 0 .2rem rgba(38,143,255,.5);
+}
+
+@media (max-width: 768px) {
+    .form-inline {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-inline .form-group {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .form-inline .form-group label {
+        margin-right: 0;
+    }
+
+    .form-inline .form-group select,
+    .form-inline .form-group input[type="date"] {
+        width: 100%;
+    }
+
+    .form-inline button {
+        width: 100%;
+    }
+
+  
+}
+
+.card {
+    background-color: #f3f3f3;
+    color: #343a40;
+}
+.card-header{
+    background-color: #343a40;
+    color: rgb(249, 249, 249);
+}
+
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h4 m-0 pr-3 mr-3 border-right">Dashboard</h1>
+    <div class="p-3">
+        <form method="get" class="form-inline">
+            <div class="form-group mr-2 mb-2">
+                <label for="start_date" class="mr-2">Fecha inicial:</label>
+                {{ form.start_date }}
+            </div>
+            <div class="form-group mr-2 mb-2">
+                <label for="end_date" class="mr-2">Fecha final:</label>
+                {{ form.end_date }}
+            </div>
+            <div class="form-group mr-2 mb-2">
+                <label for="cliente" class="mr-2">Seleccionar cliente:</label>
+                {{ form.cliente }}
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row p-0">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-80">
+                <div class="card-header">Total Solicitado</div>
+                <div class="card-body d-flex align-items-center">
+                    <h5 class="card-title">${{ total_solicitado|floatformat:2|intcomma }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-80">
+                <div class="card-header">Total Pendiente</div>
+                <div class="card-body d-flex align-items-center">
+                    <h5 class="card-title">${{ total_pendiente|floatformat:2|intcomma }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12 mb-4">
+            <div class="card h-80">
+                <div class="card-header">Firmantes Pendientes</div>
+                <div class="card-body">
+                    <h5 class="">1er Firmante: {{ firmantes_data.0|floatformat:0|intcomma }}</h5>
+                    <hr>
+                    <h5 class="">2do Firmante: {{ firmantes_data.1|floatformat:0|intcomma }}</h5>
+                    <hr>
+                    <h5 class="">3re Firmante: {{ firmantes_data.2|floatformat:0|intcomma }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Solicitado en los Últimos 30 Días</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart2"  style="max-height: 400px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Gráfico de Total Solicitado por Usuario</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Firmas Pendientes por Usuario</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Firmas Pendientes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for firma in firmas_pendientes %}
+                            <tr>
+                                <td>{{ firma.autorizante__usuario__username }}</td>
+                                <td>{{ firma.total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var ctx1 = document.getElementById('chart1').getContext('2d');
+var chart1 = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+        labels: {{ chart1_data.labels|safe }},
+        datasets: [{
+            label: 'Total Solicitado',
+            data: {{ chart1_data.data|safe }},
+            backgroundColor: 'rgba(235, 10, 10, 0.2)',
+            borderColor: 'rgba(235, 0, 0, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+var ctx2 = document.getElementById('chart2').getContext('2d');
+var chart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: {{ chart2_data.labels|safe }},
+        datasets: [{
+            label: 'Ejecutado',
+            data: {{ chart2_data.data|safe }},
+            backgroundColor: 'rgba(235, 10, 10, 0.2)',
+            borderColor: 'rgba(235, 0, 0, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
