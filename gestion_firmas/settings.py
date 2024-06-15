@@ -25,11 +25,11 @@ SECRET_KEY = 'django-insecure-^-c3d)ppx@^zj+3t9kl-gz=fb#j-$j@9vue7^f%b!!aat^mxx)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','18.221.24.105','localhost','calculadoradecosto.online','https://calculadoradecosto.online']
+ALLOWED_HOSTS = ['127.0.0.1','34.239.103.254','localhost','ademalaquiaca.online','https://ademalaquiaca.online']
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://www.calculadoradecosto.online",
-    "https://calculadoradecosto.online",
+    "https://www.ademalaquiaca.online",
+    "https://ademalaquiaca.online",
     "http://localhost",
 ]
 
