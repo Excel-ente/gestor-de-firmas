@@ -4,11 +4,13 @@ from .models import *
 class DashboardForm(forms.Form):
     start_date = forms.DateField(
         required=False, 
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=timezone.now().date
     )
     end_date = forms.DateField(
         required=False, 
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=timezone.now().date
     )
     cliente = forms.ModelChoiceField(
         queryset=Cliente.objects.all(), 

@@ -131,18 +131,27 @@
     <div class="row p-0">
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-80">
-                <div class="card-header">Total Solicitado</div>
+                <div class="card-header">
+                    Total Solicitado 
+                    <a href="/admin/cuentas/solicitud/" class="btn btn-light float-right">Ver todas</a>
+                </div>
                 <div class="card-body d-flex align-items-center">
                     <h5 class="card-title">${{ total_solicitado|floatformat:2|intcomma }}</h5>
                 </div>
+                <div class="card-footer"></div>
             </div>
+            
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-80">
-                <div class="card-header">Total Pendiente</div>
+                <div class="card-header">
+                    Total Pendiente
+                    <a href="/admin/cuentas/autorizacion/" class="btn btn-light float-right">Ver todo</a>
+                </div>
                 <div class="card-body d-flex align-items-center">
                     <h5 class="card-title">${{ total_pendiente|floatformat:2|intcomma }}</h5>
                 </div>
+                <div class="card-footer"></div>
             </div>
         </div>
         <div class="col-lg-4 col-md-12 mb-4">
@@ -155,6 +164,7 @@
                     <hr>
                     <h5 class="">3re Firmante: {{ firmantes_data.2|floatformat:0|intcomma }}</h5>
                 </div>
+                <div class="card-footer"></div>
             </div>
         </div>
     </div>

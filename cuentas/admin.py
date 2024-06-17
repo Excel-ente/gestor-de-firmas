@@ -156,7 +156,7 @@ class AutorizacionAdmin(ImportExportModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(aprobado=False).distinct()
+        return qs.filter(autorizante__usuario=request.user,aprobado=False).distinct()
 
  
     def total(self,obj):

@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+
+from cuentas.forms import DashboardForm
 from .models import Autorizacion, Cliente, MovimientoCuenta, Solicitud,Cuenta
 from django.contrib import messages
 from django.db import transaction
@@ -62,10 +64,6 @@ def Autorizacion_solicitud(request, id_autorizacion):
     return redirect('admin:cuentas_autorizacion_changelist')
 
 
-class DashboardForm(forms.Form):
-    start_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=False)
 
 @login_required(login_url='/admin/login/')
 def dashboard(request):
